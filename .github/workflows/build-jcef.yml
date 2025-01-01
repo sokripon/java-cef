@@ -1,4 +1,4 @@
-name: Build java-cef 5359
+name: Build java-cef
 
 on:
   push:
@@ -17,8 +17,6 @@ jobs:
           sudo apt update
           sudo apt install build-essential g++ cmake ninja-build openjdk-17-jdk python3 libgtk2.0-dev -y
           mkdir jcef_build && cd jcef_build
-          export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
-          export JAVA_INCLUDE_PATH=/usr/lib/jvm/java-17-openjdk-amd64/include
           cmake -G "Ninja" -DPROJECT_ARCH=${{ matrix.platform }} -DCMAKE_BUILD_TYPE=Release ..
           ninja -j4
           mv native/Release linux_${{ matrix.platform }}
