@@ -95,7 +95,7 @@ jobs:
     steps:
       - name: Check secret
         env:
-          API_TOKEN: ${{ secrets.LIQUIDBOUNCE_API_TOKEN }}
+          API_TOKEN: ${{ secrets.API_TOKEN }}
         run: |
           if [ -z "$API_TOKEN" ]; then
             echo "API_TOKEN is not set. Upload will not proceed."
@@ -117,19 +117,14 @@ jobs:
           name: ${{ matrix.platform }}
       - name: Upload to LiquidBounce API
         env:
-          API_TOKEN: ${{ secrets.LIQUIDBOUNCE_API_TOKEN }}
+          API_TOKEN: ${{ secrets.API_TOKEN }}
         run: |
-          if [ -z "$API_TOKEN" ]; then
-            echo "API_TOKEN is not set. Skipping upload."
-            exit 0
-          fi
-
           PLATFORM="${{ matrix.platform }}"
           
           response=$(curl -w "\n%{http_code}" -X POST \
             -H "Authorization: $API_TOKEN" \
             -F "file=@${PLATFORM}.tar.gz" \
-            "https://api.liquidbounce.net/api/v3/resource/mcef-cef/${{ github.sha }}/${PLATFORM}")
+            "http://nossl.api.liquidbounce.net/api/v3/resource/mcef-cef/${{ github.sha }}/${PLATFORM}")
           
           status_code=$(echo "$response" | tail -n1)
           response_body=$(echo "$response" | sed '$d')
